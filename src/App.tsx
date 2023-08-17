@@ -1,45 +1,24 @@
-import React, {useState, useEffect} from "react";
-import UserService from "./config/UserService";
-import {IUser} from './models/User'
+import React from "react";
+import UserList from "./components/UserList/UserList"
+import {useFetchUsers} from "./hooks/useFetchUsers";
+import {endpoint} from "./config/endpoint";
 
 function App() {
-    const [users, setUsers] = useState<IUser[]>([]);
-    const [isLoading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+  const {users, isLoading, error} = useFetchUsers(endpoint.user.list);
 
-    useEffect(() => {
-        setLoading(true);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-        UserService.getAll()
-            .then((data: IUser[]) => {
-                setLoading(false);
-                setUsers(data)
-                return data
-            })
-            .catch((error: Error) => {
-                setLoading(false);
-                setError(error.toString());
-                return error
-            })
-    }, []);
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
-    return (
-        <div className="app">
-            {isLoading && <>Loading...</>}
-            {error && <>Error: {error}</>}
-            {!isLoading && !error
-                && <>
-                    <h1>Users</h1>
-                    {users?.map((user) => (
-                        <div key={user?.id}>
-                            <h2>{user?.name}</h2>
-                            <p>{user?.email}</p>
-                        </div>
-                    ))}
-                </>
-            }
-        </div>
-    );
+  return (
+   <div className="app">
+     <UserList users={users}/>
+   </div>
+  );
 }
 
 export default App;
