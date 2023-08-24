@@ -9,10 +9,15 @@ export const useFetchUsers = (url: string): { isLoading: boolean; error: string 
   const fetchData = async () => {
     try {
       const response = await fetch(url)
+      if (!response.ok) {
+        const message = `Произошла ошибка ${response.status}`;
+        throw new Error(message);
+      }
+
       const data = await response.json()
       setUsers(data)
     } catch (error) {
-      setError(error)
+      setError(error.message)
     } finally {
       setLoading(false)
     }
