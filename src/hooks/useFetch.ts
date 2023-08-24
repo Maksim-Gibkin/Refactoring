@@ -1,21 +1,24 @@
 import {useEffect, useState} from "react";
-import {IUser} from "../models/User";
 
-export const useFetchUsers = (url: string): { isLoading: boolean; error: string | null; users: IUser[] } => {
-  const [users, setUsers] = useState<IUser[]>([]);
+export const useFetch = <T>(url: string, requestParam?: any): {
+  isLoading: boolean;
+  error: string | null;
+  data: T
+} => {
+  const [data, setData] = useState<T>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
-      const response = await fetch(url)
+      const response = await fetch(url, requestParam)
       if (!response.ok) {
         const message = `Произошла ошибка ${response.status}`;
         throw new Error(message);
       }
 
-      const data = await response.json()
-      setUsers(data)
+      const res = await response.json()
+      setData(res)
     } catch (error) {
       setError(error.message)
     } finally {
@@ -27,5 +30,5 @@ export const useFetchUsers = (url: string): { isLoading: boolean; error: string 
     fetchData()
   }, [url]);
 
-  return {users, isLoading, error}
+  return {data, isLoading, error}
 }

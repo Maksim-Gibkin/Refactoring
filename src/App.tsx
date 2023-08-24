@@ -1,10 +1,11 @@
 import React from "react";
 import UserList from "./components/UserList/UserList"
-import {useFetchUsers} from "./hooks/useFetchUsers";
+import {useFetch} from "./hooks/useFetch";
 import {endpoint} from "./config/endpoint";
+import {IUser} from "./models/User";
 
 function App() {
-  const {users, isLoading, error} = useFetchUsers(endpoint.user.list);
+  const {data, isLoading, error} = useFetch<IUser[]>(endpoint.user.list);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -16,7 +17,7 @@ function App() {
 
   return (
    <div className="app">
-     <UserList users={users}/>
+     <UserList users={data}/>
    </div>
   );
 }
