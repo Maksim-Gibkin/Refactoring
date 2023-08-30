@@ -17,7 +17,7 @@ function App() {
 
   return (
    <div className="app">
-     <UserList users={data}/>
+     <UserList users={data!}/>
    </div>
   );
 }
